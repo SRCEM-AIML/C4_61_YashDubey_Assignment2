@@ -2,26 +2,41 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "yourdockerhubusername/studentproject"
+        DOCKER_IMAGE = "yashdubey2004/studentproject"
     }
 
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/your-repo/StudentProject.git'
+                // Clone the GitHub repository
+                git 'https://github.com/C4_61_YashDubey_Assignment2/StudentProject.git'
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                // Build the Docker image using bat for Windows
+                bat "docker build -t %DOCKER_IMAGE% ."
             }
         }
+
         stage('Push to Docker Hub') {
             steps {
-                withDockerRegistry([credentialsId: 'dockerhub-credentials', url: '']) {
-                    sh 'docker push $DOCKER_IMAGE'
+                // Login to Docker Hub using Jenkins credentials
+                withDockerRegistry([credentialsId: 'YashDubey', url: 'https://index.docker.io/v1/']) {
+                    // Push Docker image to Docker Hub
+                    bat "docker push %DOCKER_IMAGE%"
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build and push completed successfully!'
+        }
+        failure {
+            echo '❌ Build or push failed. Check the logs.'
         }
     }
 }
