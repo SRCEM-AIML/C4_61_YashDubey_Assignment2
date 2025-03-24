@@ -8,8 +8,8 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                // Clone the GitHub repository
-                git 'https://github.com/C4_61_YashDubey_Assignment2/StudentProject.git'
+                // Use SSH with github-ssh credentials
+                git credentialsId: 'github-ssh', url: 'git@github.com:SRCEM-AIML/C4_61_YashDubey_Assignment2.git'
             }
         }
 
@@ -24,7 +24,6 @@ pipeline {
             steps {
                 // Login to Docker Hub using Jenkins credentials
                 withDockerRegistry([credentialsId: 'YashDubey', url: 'https://index.docker.io/v1/']) {
-                    // Push Docker image to Docker Hub
                     bat "docker push %DOCKER_IMAGE%"
                 }
             }
